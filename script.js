@@ -48,7 +48,7 @@ const chao= {
         contexto.drawImage(
             sprites,
             chao.spriteX, chao.spriteY, //sprites x e sprites y
-            chao.largura, chao.altura,  //Ta,amho do recorte na sprite
+            chao.largura, chao.altura,  //Tamanho do recorte na sprite
             chao.x, chao.y,
             chao.largura, chao.altura,
         );
@@ -56,7 +56,7 @@ const chao= {
         contexto.drawImage(
             sprites,
             chao.spriteX, chao.spriteY, //sprites x e sprites y
-            chao.largura, chao.altura,  //Ta,amho do recorte na sprite
+            chao.largura, chao.altura,  //Tamanho do recorte na sprite
             (chao.x + chao.largura), chao.y,
             chao.largura, chao.altura,
         );
@@ -82,22 +82,88 @@ const flappyBird = {
         contexto.drawImage(
             sprites,
             flappyBird.spriteX, flappyBird.spriteY, //sprites x e sprites y
-            flappyBird.largura, flappyBird.altura,  //Ta,amho do recorte na sprite
+            flappyBird.largura, flappyBird.altura,  //Tamanho do recorte na sprite
             flappyBird.x, flappyBird.y,
             flappyBird.largura, flappyBird.altura,
         );
     }
 }
 
+// mensagem da tela de inicio
 
-function loop() {
-    flappyBird.atualiza();
-
-    planoDeFundo.desenha();
-    chao.desenha();
-    flappyBird.desenha();
-
-    requestAnimationFrame(loop);
+const mensagemGetReady = {
+    sX: 134,
+    sY: 0,
+    w: 174,
+    h: 152,
+    x: (canvas.width / 2) - 174 / 2,
+    y: 50,
+    desenha() {
+        contexto.drawImage(
+            sprites,
+            mensagemGetReady.sX, mensagemGetReady.sY, //sprites x e sprites
+            mensagemGetReady.w, mensagemGetReady.h,  //Tamanho do recorte na sprite
+            mensagemGetReady.x, mensagemGetReady.y,
+            mensagemGetReady.w, mensagemGetReady.h
+        );
+    }
 }
 
+
+//
+// Telas
+//
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+    telaAtiva = novaTela;
+
+};
+
+
+const Telas = {
+  inicio: {
+    desenha(){
+        planoDeFundo.desenha();
+        chao.desenha();
+        flappyBird.desenha();
+        mensagemGetReady.desenha();
+    },
+    click(){
+        mudaParaTela(Telas.jogo);
+        
+    },
+    atualiza(){
+
+    }
+  }  
+};
+
+Telas.jogo = {
+    desenha(){
+        planoDeFundo.desenha();
+        chao.desenha();
+        flappyBird.desenha();  
+    },
+    atualiza() {
+        flappyBird.atualiza();
+    }
+};
+
+function loop() {
+
+    telaAtiva.desenha();
+    telaAtiva.atualiza();
+
+    requestAnimationFrame(loop);
+};
+
+
+window.addEventListener('click', function() {
+    if(telaAtiva.click) {
+        telaAtiva.click();
+    }
+});
+
+
+mudaParaTela(Telas.inicio);
 loop();
